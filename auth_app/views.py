@@ -15,7 +15,7 @@ Will return the email as response upon success or an error upon failure.
 @permission_classes([AllowAny])
 def register_view(request):
     data = request.data
-    data['username'] = data['email']
+    data['username'] = data['email'].split('@')[0]
     serializer = UserProfileSerializer(data=data)
     if serializer.is_valid():
         user = serializer.save()
