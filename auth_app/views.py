@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from auth_app.email_confirmation.email_confirmation import send_confirmation_email
 from auth_app.serializers import UserProfileSerializer
 
 """
@@ -17,7 +18,8 @@ def register_view(request):
     data['username'] = data['email']
     serializer = UserProfileSerializer(data=data)
     if serializer.is_valid():
-        serializer.save()
+        user = serializer.save()
+        send_confirmation_email(user)
         response = {'email': serializer.data['email']}
         return Response(response, status=201)
     response = {'detail': 'Please check your entries and try again.'}
