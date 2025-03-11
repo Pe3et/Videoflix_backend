@@ -39,6 +39,7 @@ def confirm_view(request, token):
     user = token_obj.user
     user.is_email_confirmed = True
     user.save()
+    token_obj.delete()
     return HttpResponseRedirect('https://videoflix.peeet.net/login')
 
 """
