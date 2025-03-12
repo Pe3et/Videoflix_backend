@@ -20,9 +20,12 @@ Will return the email as response upon success or an error upon failure.
 def register_view(request):
     data = request.data
     data['username'] = data['email'].split('@')[0]
+    password = data['password']
     serializer = UserProfileSerializer(data=data)
     if serializer.is_valid():
         user = serializer.save()
+        user.set_password(password)
+        user.save()
         send_confirmation_email(user)
         response = {'email': serializer.data['email']}
         return Response(response, status=201)
