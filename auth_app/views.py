@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -46,11 +47,22 @@ def confirm_view(request, token):
     new_token = Token.objects.create(user=user)
     return HttpResponseRedirect('http://localhost:4200/login')
 
-"""
-Function based view for the login endpoint.
-"""
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def login_view(request):
-    #TODO:
-    pass
+
+class LoginView(ObtainAuthToken):
+   permission_classes = [AllowAny]
+
+   def post(self, request):
+       serializer = self.serializer_class(data=request.data)
+       data = {}
+       if serializer.is_valid():
+            user = serializer.validated_data['user']
+            if(user.is_email_confirmed == True):
+                token, created = Token.objects.get_or_create(user=user)
+                data = {'token': token.key}
+            else:
+                data = {'details': 'Please check your email for the account activation link first.'}
+       else:
+           data = {'details': 'Unable to login with the provided credentials.'}
+           return Response(data, status=400)
+
+       return Response(data)
