@@ -9,7 +9,7 @@ The user has to click on the link containing the Token, to confirm the registere
 """
 def send_confirmation_email(user):
     token, created = Token.objects.get_or_create(user=user)
-    confirmation_link = f"https://backend.peeet.net/videoflix/auth/confirm/{token.key}/"
+    confirmation_link = f"http://127.0.0.1:8000/videoflix/auth/confirm/{token.key}/"
     html_message = render_to_string('email_confirmation.html', {
         'username': user.username,
         'confirmation_link': confirmation_link

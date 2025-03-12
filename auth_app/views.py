@@ -43,7 +43,8 @@ def confirm_view(request, token):
     user.is_email_confirmed = True
     user.save()
     token_obj.delete()
-    return HttpResponseRedirect('https://videoflix.peeet.net/login')
+    new_token = Token.objects.create(user=user)
+    return HttpResponseRedirect('http://localhost:4200/login')
 
 """
 Function based view for the login endpoint.
