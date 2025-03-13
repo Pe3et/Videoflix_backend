@@ -2,9 +2,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 
 from auth_app.email_confirmation.email_confirmation import send_confirmation_email
 from auth_app.models import UserProfile
@@ -18,6 +19,7 @@ Will return the email as response upon success or an error upon failure.
 """
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([AnonRateThrottle])
 def register_view(request):
     data = request.data
     data['username'] = data['email'].split('@')[0]
@@ -38,6 +40,7 @@ Handles the click on the activation link from the confirmation email after regis
 """
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@throttle_classes([AnonRateThrottle])
 def confirm_view(request, token):
     token_obj = get_object_or_404(Token, key=token)
     user = token_obj.user
@@ -50,6 +53,7 @@ def confirm_view(request, token):
 
 class LoginView(ObtainAuthToken):
    permission_classes = [AllowAny]
+   throttle_classes = [AnonRateThrottle]
 
    def post(self, request):
        serializer = self.serializer_class(data=request.data)
