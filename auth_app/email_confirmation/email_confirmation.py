@@ -1,4 +1,5 @@
-from django.core.mail import EmailMultiAlternatives, send_mail
+from email.mime.image import MIMEImage
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from rest_framework.authtoken.models import Token
@@ -23,4 +24,11 @@ def send_confirmation_email(user):
         to=[user.email]
     )
     email.attach_alternative(html_message, 'text/html')
+
+    with open('media/img/logo_full.png', 'rb') as f:
+        img = MIMEImage(f.read())
+        img.add_header('Content-ID', '<logo>')
+        img.add_header('Content-Disposition', 'inline', filename='logo.png') 
+        email.attach(img)
+
     email.send()
