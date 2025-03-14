@@ -185,5 +185,67 @@ class ForgotPasswordTests(APITestCase):
 
 
 class ResetPasswordTests(APITestCase):
-    #url = reverse('reset-password')
-    pass
+    url = reverse('reset-password')
+    user = None
+
+    """
+    Runs the correct registration test in order to have test user to work with.
+    """
+    def setUp(self):
+        registration_data = {
+            'email': 'test@peeet.net',
+            'password': 'password123',
+            'username': 'test'
+        }
+        self.user = UserProfile.objects.create_user(**registration_data)
+
+    """
+    Tests the correct password reset.
+    """
+    def test_correct_reset(self):
+        post_data = {
+            'password': 'newpassword123',
+            'repeated_password': 'newpassword123'
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('details' in response.data, True)        
+  
+    """
+    Tests unauthorized password reset.
+    """
+    def test_unauthorized_reset(self):
+        post_data = {
+            'password': 'newpassword123',
+            'repeated_password': 'newpassword123'
+        }
+        response = self.client.post(self.url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual('details' in response.data, True)  
+
+    """
+    Tests unmatching password reset.
+    """
+    def test_unmatching_password_reset(self):
+        post_data = {
+            'password': 'newpassword123',
+            'repeated_password': 'newpassword1234'
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual('details' in response.data, True)  
+        
+    """
+    Tests bad password reset.
+    """
+    def test_bad_password_reset(self):
+        post_data = {
+            'bad': 'newpassword123',
+            'repeated_password': 'newpassword1234'
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual('details' in response.data, True)     
