@@ -39,4 +39,27 @@ Sends the email for resetting the password.
 The user has to click on the link containing a Token, to confirm the password reset request.
 """
 def send_password_reset_email(user):
-    pass
+    token, created = Token.objects.get_or_create(user=user)
+    reset_link = f"http://127.0.0.1:8000/videoflix/auth/reset/{token.key}/"
+
+    html_message = render_to_string(
+        'email_forgot_password.html',
+        {'reset_link': reset_link}
+    )
+    plain_message = strip_tags(html_message)
+
+    email = EmailMultiAlternatives(
+        subject="Reset your Password",
+        body=plain_message,
+        from_email='noreply@videoflix.peeet.net',
+        to=[user.email]
+    )
+    email.attach_alternative(html_message, 'text/html')
+
+    with open('media/img/logo_full.png', 'rb') as f:
+        img = MIMEImage(f.read())
+        img.add_header('Content-ID', '<logo>')
+        img.add_header('Content-Disposition', 'inline', filename='logo.png') 
+        email.attach(img)
+
+    email.send()
