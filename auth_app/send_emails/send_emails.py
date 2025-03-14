@@ -32,3 +32,11 @@ def send_confirmation_email(user):
         email.attach(img)
 
     email.send()
+
+
+"""
+Sends the email for resetting the password.
+The user has to click on the link containing a Token, to confirm the password reset request.
+"""
+def send_password_reset_email(user):
+    pass

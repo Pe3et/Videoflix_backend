@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
-from auth_app.email_confirmation.email_confirmation import send_confirmation_email
+from auth_app.send_emails.send_emails import send_confirmation_email, send_password_reset_email
 from auth_app.models import UserProfile
 from auth_app.serializers import UserProfileSerializer
 
@@ -22,18 +22,22 @@ Will return the email as response upon success or an error upon failure.
 @throttle_classes([AnonRateThrottle])
 def register_view(request):
     data = request.data
-    data['username'] = data['email'].split('@')[0]
-    password = data['password']
-    serializer = UserProfileSerializer(data=data)
-    if serializer.is_valid():
-        user = serializer.save()
-        user.set_password(password)
-        user.save()
-        send_confirmation_email(user)
-        response = {'email': serializer.data['email']}
-        return Response(response, status=201)
-    response = {'detail': 'Please check your entries and try again.'}
-    return Response(response, status=400)
+    try:
+        data['username'] = data['email'].split('@')[0]
+        password = data['password']
+        serializer = UserProfileSerializer(data=data)
+        if serializer.is_valid():
+            user = serializer.save()
+            user.set_password(password)
+            user.save()
+            send_confirmation_email(user)
+            response = {'email': serializer.data['email']}
+            return Response(response, status=201)
+        response = {'details': 'Please check your entries and try again.'}
+        return Response(response, status=400)
+    except:
+        response = {'details': 'Please check your entries and try again.'}
+        return Response(response, status=400)
 
 """
 Handles the click on the activation link from the confirmation email after register.
@@ -70,3 +74,19 @@ class LoginView(ObtainAuthToken):
            return Response(data, status=400)
 
        return Response(data)
+   
+
+"""
+Handles the sending of reset password links via email.
+"""
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@throttle_classes([AnonRateThrottle])
+def forgot_password(request):
+    try:
+        email = request.data['email']
+        user = get_object_or_404(UserProfile, email=email)
+        send_password_reset_email(user)
+        return Response({'details': 'Please check your email for the password reset link.'}, status=200)
+    except:
+        return Response({'details': 'Unable to process the request.'}, status=400)
