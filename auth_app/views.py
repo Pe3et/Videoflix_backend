@@ -69,6 +69,7 @@ class LoginView(ObtainAuthToken):
                 data = {'token': token.key}
             else:
                 data = {'details': 'Please check your email for the account activation link first.'}
+                return Response(data, status=401)
        else:
            data = {'details': 'Unable to login with the provided credentials.'}
            return Response(data, status=400)
