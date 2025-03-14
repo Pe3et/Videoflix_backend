@@ -83,7 +83,7 @@ Handles the sending of reset password links via email.
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
-def forgot_password(request):
+def forgot_password_view(request):
     try:
         email = request.data['email']
         user = get_object_or_404(UserProfile, email=email)
@@ -91,3 +91,25 @@ def forgot_password(request):
         return Response({'details': 'Please check your email for the password reset link.'}, status=200)
     except:
         return Response({'details': 'Unable to process the request.'}, status=400)
+    
+
+"""
+Handles the click on the reset password link obtained via email.
+Redirects the user to a frontend route, where the token will be stored as a variable.
+"""
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@throttle_classes([AnonRateThrottle])
+def reset_password_redirect_view(request, token):
+    token_obj = get_object_or_404(Token, key=token)
+    user = token_obj.user
+    return HttpResponseRedirect('http://localhost:4200/reset-password/' + token)
+
+
+"""
+Handles the click on the reset password button.
+"""
+@api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
+def reset_password_view(request):
+    pass

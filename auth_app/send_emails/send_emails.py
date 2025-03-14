@@ -40,7 +40,7 @@ The user has to click on the link containing a Token, to confirm the password re
 """
 def send_password_reset_email(user):
     token, created = Token.objects.get_or_create(user=user)
-    reset_link = f"http://127.0.0.1:8000/videoflix/auth/reset/{token.key}/"
+    reset_link = f"http://127.0.0.1:8000/videoflix/auth/reset-password/{token.key}/"
 
     html_message = render_to_string(
         'email_forgot_password.html',
