@@ -57,7 +57,80 @@ class RegisterTests(APITestCase):
 
 
 class LoginTests(APITestCase):
-    pass
+    url = reverse('login')
+
+    """
+    Runs the correct registration test in order to have test user to work with.
+    """
+    def setUp(self):
+        registration_data = {
+            'email': 'test@peeet.net',
+            'password': 'password123',
+            'username': 'test'
+        }
+        UserProfile.objects.create_user(**registration_data)
+
+    """
+    Tests login attempt but user did not activate the account.
+    """
+    def test_unactivated_account_login(self):
+        login_data = {
+            'username': 'test',
+            'password': 'password123'
+        }
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data['details'], 'Please check your email for the account activation link first.')
+
+    """
+    Tests the correct login.
+    """
+    def test_correct_login(self):
+        login_data = {
+            'username': 'test',
+            'password': 'password123'
+        }
+        user = UserProfile.objects.get(email='test@peeet.net')
+        user.is_email_confirmed = True
+        user.save()
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('token' in response.data, True)
+
+    """
+    Tests missing user.
+    """
+    def test_missing_user(self):
+        login_data = {
+            'username': 'testmissing',
+            'password': 'password1234'
+        }
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['details'], 'Unable to login with the provided credentials.')
+    
+    """
+    Tests wrong user data.
+    """
+    def test_wrong_user_data(self):
+        login_data = {
+            'username': 'test',
+            'password': 'wrongpassword'
+        }
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['details'], 'Unable to login with the provided credentials.')
+
+    """
+    Tests missing user data.
+    """
+    def test_missing_user_data(self):
+        login_data = {
+            'username': 'test'
+        }
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['details'], 'Unable to login with the provided credentials.')
 
 
 class ForgotPasswordTests(APITestCase):
