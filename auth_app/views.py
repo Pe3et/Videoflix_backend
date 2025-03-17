@@ -101,8 +101,6 @@ Redirects the user to a frontend route, where the token will be stored as a vari
 @permission_classes([AllowAny])
 @throttle_classes([AnonRateThrottle])
 def reset_password_redirect_view(request, token):
-    token_obj = get_object_or_404(Token, key=token)
-    user = token_obj.user
     return HttpResponseRedirect('http://localhost:4200/reset-password/' + token)
 
 
@@ -112,4 +110,15 @@ Handles the click on the reset password button.
 @api_view(['POST'])
 @throttle_classes([AnonRateThrottle])
 def reset_password_view(request):
-    pass
+    try:
+        password = request.data['password']
+        repeated_password = request.data['repeatedPassword']
+        user = request.user
+        if password == repeated_password:
+            user.set_password(password)
+            user.save()
+            return Response({'details': 'Password reset successful.'}, status=200)
+        else:
+            return Response({'details': 'Passwords do not match.'}, status=400)
+    except:
+        return Response({'details': 'Unable to process the request.'}, status=400)

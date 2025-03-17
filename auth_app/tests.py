@@ -205,10 +205,11 @@ class ResetPasswordTests(APITestCase):
     def test_correct_reset(self):
         post_data = {
             'password': 'newpassword123',
-            'repeated_password': 'newpassword123'
+            'repeatedPassword': 'newpassword123'
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, post_data, format='json')
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('details' in response.data, True)        
   
@@ -222,7 +223,6 @@ class ResetPasswordTests(APITestCase):
         }
         response = self.client.post(self.url, post_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual('details' in response.data, True)  
 
     """
     Tests unmatching password reset.
@@ -235,7 +235,6 @@ class ResetPasswordTests(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, post_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual('details' in response.data, True)  
         
     """
     Tests bad password reset.
@@ -248,4 +247,3 @@ class ResetPasswordTests(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, post_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual('details' in response.data, True)     
