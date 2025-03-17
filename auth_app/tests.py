@@ -209,7 +209,6 @@ class ResetPasswordTests(APITestCase):
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, post_data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('details' in response.data, True)        
   
