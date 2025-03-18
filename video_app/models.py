@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 class Video(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -14,11 +16,22 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
-    
-    def delete(self, *args, **kwargs):
-        self.original_file.delete()
-        self.processed_120p.delete()
-        self.processed_360p.delete()
-        self.processed_720p.delete()
-        self.processed_1080p.delete()
-        super().delete(*args, **kwargs)
+
+
+@receiver(post_delete, sender=Video)
+def delete_video_files(sender, instance, **kwargs):
+    """
+    Deletes files from the filesystem when the Video instance is deleted.
+    """
+    if instance.original_file:
+        instance.original_file.delete(save=False)
+    if instance.processed_120p:
+        instance.processed_120p.delete(save=False)
+    if instance.processed_360p:
+        instance.processed_360p.delete(save=False)
+    if instance.processed_720p:
+        instance.processed_720p.delete(save=False)
+    if instance.processed_1080p:
+        instance.processed_1080p.delete(save=False)
+    if instance.thumbnail:
+        instance.thumbnail.delete(save=False)

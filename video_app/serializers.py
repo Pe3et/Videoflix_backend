@@ -13,6 +13,7 @@ class VideoSerializer(serializers.ModelSerializer):
     Creates converted video files with different resolution.
     """
     def create(self, validated_data):
+        print('DOES THIS EVEN FIRE?')
         video = super().create(validated_data)
-        convert_video(video)
+        convert_video(video.id)
         return video

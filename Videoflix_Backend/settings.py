@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auth_app',
-    'video_app'
+    'video_app',
+    'Videoflix_Backend'
 ]
 
 AUTH_USER_MODEL = 'auth_app.UserProfile'
