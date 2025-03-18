@@ -10,10 +10,9 @@ class VideoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     """
-    Creates converted video files with different resolution.
+    Calls the tasks for creation of converted video files with different resolution.
     """
     def create(self, validated_data):
-        print('DOES THIS EVEN FIRE?')
         video = super().create(validated_data)
         convert_video(video.id)
         return video
