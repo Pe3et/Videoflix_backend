@@ -10,6 +10,10 @@ from video_app.models import Video
 
 @shared_task(bind=True, max_retries=3)
 def convert_video(self, video_id):
+    """
+    Converts the original video file to other video files with different resolutions,
+    configured in the settings.py and using ffmpeg in the celerey task worker for redis. 
+    """
     try:
         video = Video.objects.get(id=video_id)
         input_path = video.original_file.path
@@ -29,7 +33,8 @@ def convert_video(self, video_id):
             subprocess.run(cmd, check=True)
 
             with open(output_path, 'rb') as f:
-                setattr(video, f'processed_{resolution}', default_storage.save(output_path, f))
+                saved_path = default_storage.save(os.path.join('videos', f'{base_name}_{resolution}.mp4'), f)
+                setattr(video, f'processed_{resolution}', saved_path)
                 os.remove(output_path)
 
             video.save()
