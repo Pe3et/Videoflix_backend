@@ -3,6 +3,12 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 class Video(models.Model):
+    CATEGORIES = [
+        ('cats', 'Cats'),
+        ('cities', 'Cities'),
+        ('nature', 'Nature')
+    ]
+
     created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -11,8 +17,8 @@ class Video(models.Model):
     processed_360p = models.FileField(null=True, blank=True)
     processed_720p = models.FileField(null=True, blank=True)
     processed_1080p = models.FileField(null=True, blank=True)
-    thumbnail = models.FileField(upload_to='thumbnails/', blank=True, null=True)
-    category = models.CharField(max_length=255, blank=True, null=True)
+    thumbnail = models.FileField(upload_to='thumbnails/')
+    category = models.CharField(max_length=255, choices=CATEGORIES, default='cats')
 
     def __str__(self):
         return self.title

@@ -172,3 +172,5 @@ cython_debug/
 .env
 
 dump.rdb
+media/thumbnails/*
+media/videos/*
