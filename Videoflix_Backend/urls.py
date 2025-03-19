@@ -25,7 +25,7 @@ import video_app.urls
 urlpatterns = [
     path('videoflix/admin/', admin.site.urls),
     path('videoflix/auth/', include(auth_app.urls)),
-    path('videoflix/videos/', include(video_app.urls))
+    path('videoflix/', include(video_app.urls))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
