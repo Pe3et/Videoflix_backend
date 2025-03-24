@@ -7,6 +7,8 @@ Table of Contents
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
 * [Getting Started](#getting-started)
+* [How to upload new videos](#how-to-upload-new-videos)
+* [API Documentation](#api-documentation)
 * [Features](#features)
 
 ## Introduction
@@ -20,6 +22,8 @@ Videoflix is a full stack video streaming platform for demonstration purposes. T
 * FFmpeg
 
 ## Installation
+
+This is a backend to host on Linux (like most backends), so if you are not already using Linux and want to test this project on Windows, you have to use a Linux emulator of your choice.
 
 ### On Linux
 
@@ -35,44 +39,19 @@ source env/bin/activate
 python3 pip install -r requirements.txt
 ```
 
-### On Windows
-
-(Caution: unfinished instructions)
-
-1. Install the latest Python and FFmpeg version.
-2. Install and set up WSL.
-```
-wsl --install
-```
-3. Install Redis on WSL.
-```
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-sudo apt-get update
-sudo apt-get install redis
-```
-4. Clone the repository.
-5. Navigate into the cloned folder and activate the environment.
-```
-python -m venv env
-env\Scripts\activate.bat
-```
-6. Install the requirements.
-```
-pip install -r .\requirements.txt
-
-```
-
 ## Getting Started
 
-Start the Script for running the Backend localhost, redis and celery services using the start_services.sh (linux) or start_services.bat(windows) script.
+Start the script for running the backend localhost, redis and celery services using the given script:
+```
+./start_services.sh
+```
 
 Also host the [frontend](https://github.com/Pe3et/Videoflix_frontend) part locally. 
 
-In order to receive a required registration email and being able to test the password reset functionality, you first need to add email credentials in order to receive emails from that added account.
+In order to receive a required registration email to be able to test the logged in and password reset functionality, you first need to add existing email credentials in order to receive emails from that added account.
 You can do this by filling out the three lines in the .env file.
 
-How to upload new videos:
+## How to upload new videos
 
 1. Create a superuser.
 ```
@@ -83,6 +62,11 @@ python manage.py createsuperuser
 
 This process will convert the video to different resolutions as a background process in the database.
 You can then register a user on the frontend, login and watch the videos on the hosted frontend.
+
+## API Documentation
+
+When you hosted the project, you can see the documentation here: 
+http://127.0.0.1:8000/videoflix/schema/swagger-ui/
 
 ## Mentionable Features
 

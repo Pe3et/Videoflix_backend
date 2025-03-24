@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -159,7 +160,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '20/minute',
         'user': '100/minute'
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -184,4 +186,10 @@ VIDEO_RESOLUTIONS = {
     '360p': (640, 360),
     '720p': (1280, 720),
     '1080p': (1920, 1080)
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Videoflix API',
+    'DESCRIPTION': 'This is the Documentation of the videoflix API endpoints.',
+    'VERSION': '1.0.0',
 }
