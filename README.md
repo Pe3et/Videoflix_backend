@@ -106,6 +106,14 @@ You can do this by filling out the three lines in the .env file.
 When you hosted the project, you can see the documentation here: 
 http://127.0.0.1:8000/videoflix/schema/swagger-ui/
 
+If you want to check the test coverage, run the following commands:
+```
+coverage run manage.py test
+```
+```
+coverage report
+```
+
 ## Mentionable Features
 
 * Reset Password via email
