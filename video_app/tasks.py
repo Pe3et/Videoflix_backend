@@ -12,7 +12,7 @@ from video_app.models import Video
 def convert_video(self, video_id):
     """
     Converts the original video file to other video files with different resolutions,
-    configured in the settings.py and using ffmpeg in the celerey task worker for redis. 
+    configured in the settings.py and using ffmpeg in the celery task worker for redis. 
     """
     try:
         video = Video.objects.get(id=video_id)
