@@ -38,7 +38,7 @@ source env/bin/activate
 ```
 4. Install the required packages using pip.
 ```
-python3 pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Getting Started
