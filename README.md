@@ -57,12 +57,13 @@ Then you can setup your database. Please enter your Linux username and create yo
 
 ```
 CREATE DATABASE videoflix;
-CREATE ROLE YOUR_LINUX_USERNAME WITH PASSWORD 'YOUR_POSTGRES_PASSWORD';
-ALTER ROLE YOUR_LINUX_USERNAME WITH LOGIN;
-ALTER ROLE YOUR_LINUX_USERNAME SET client_encoding TO 'utf8';
-ALTER ROLE YOUR_LINUX_USERNAME SET default_transaction_isolation TO 'read committed';
-ALTER ROLE YOUR_LINUX_USERNAME SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE videoflix TO YOUR_LINUX_USERNAME;
+CREATE ROLE your_linux_username WITH PASSWORD 'your_postgres_password';
+ALTER ROLE your_linux_username WITH LOGIN;
+ALTER ROLE your_linux_username SET client_encoding TO 'utf8';
+ALTER ROLE your_linux_username SET default_transaction_isolation TO 'read committed';
+ALTER ROLE your_linux_username SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE videoflix TO your_linux_username;
+ALTER USER your_linux_username WITH SUPERUSER;
 \q
 ```
 
